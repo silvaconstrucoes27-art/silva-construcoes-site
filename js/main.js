@@ -23,13 +23,34 @@
   var header = document.getElementById('header');
   var waFloat = document.querySelector('.wa-float');
 
-  function onScroll() {
+  // Histerese (limiares diferentes pra ligar/desligar) + 1 leitura por frame:
+  // evita que, com o scroll parado bem em cima do limiar (rolagem por inércia
+  // no trackpad costuma "boiar" alguns pixels ali), a classe fique ligando e
+  // desligando várias vezes por segundo — cada troca reinicia a transition
+  // de 300ms e o recálculo do backdrop-filter do header, o que pisca.
+  var headerStuck = false;
+  var waVisible = false;
+  var scrollTicking = false;
+
+  function applyScrollState() {
     var y = window.scrollY || document.documentElement.scrollTop;
-    if (header) header.classList.toggle('is-stuck', y > 40);
-    if (waFloat) waFloat.classList.toggle('is-visible', y > 520);
+    if (header) {
+      if (!headerStuck && y > 48) { headerStuck = true; header.classList.add('is-stuck'); }
+      else if (headerStuck && y < 32) { headerStuck = false; header.classList.remove('is-stuck'); }
+    }
+    if (waFloat) {
+      if (!waVisible && y > 520) { waVisible = true; waFloat.classList.add('is-visible'); }
+      else if (waVisible && y < 480) { waVisible = false; waFloat.classList.remove('is-visible'); }
+    }
+    scrollTicking = false;
+  }
+  function onScroll() {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(applyScrollState);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  applyScrollState();
 
   /* ---------------------------------------------------------------
      MENU MOBILE
