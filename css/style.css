@@ -583,7 +583,7 @@ h3,.h3{
 
 /* ================= REVELAÇÃO ================= */
 .reveal{opacity:0}
-.reveal.is-in{opacity:1;animation:reveal-in 500ms var(--ease)}
+.reveal.is-in{opacity:1;animation:reveal-in 500ms var(--ease) backwards}
 .reveal[data-d="1"].is-in{animation-delay:60ms}
 .reveal[data-d="2"].is-in{animation-delay:120ms}
 .reveal[data-d="3"].is-in{animation-delay:180ms}
